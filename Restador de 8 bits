@@ -1,0 +1,28 @@
+**Este código, solo entrega valores positivos**
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+entity RESTADOR is
+    
+    port(
+        A, B : in std_logic_vector(7 downto 0);
+        S : out std_logic_vector(7 downto 0));
+end RESTADOR;
+
+architecture solve of RESTADOR is
+	signal diff : std_logic_vector(7 downto 0);
+begin
+    -- Calcular la resta sin signo
+    process(A, B)
+    begin
+        if A >= B then
+            diff <= A - B;
+        else
+            diff <= B - A;
+        end if;
+    end process;
+
+    -- Asignar el resultado a la salida S
+    S <= diff;
+end solve;
