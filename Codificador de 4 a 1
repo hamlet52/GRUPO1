@@ -1,0 +1,11 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_signed.all;
+entity CODE4A1 is
+ port(A1,A2,A3,A4:in std_logic;
+		AF: out std_logic_vector (3 downto 0));
+end CODE4A1;
+architecture comportamiento of CODE4A1 is
+begin 
+AF<=A1&A2&A3&A4;
+end comportamiento;
