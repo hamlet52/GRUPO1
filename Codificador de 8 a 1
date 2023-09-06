@@ -1,0 +1,11 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_signed.all;
+entity CODE8A1 is
+ port(A1,A2,A3,A4,A5,A6,A7,A8:in std_logic;
+		AF: out std_logic_vector (7 downto 0));
+end CODE8A1;
+architecture comportamiento of CODE8A1 is
+begin 
+AF<=A1 & A2 & A3 & A4 &A5&A6&A7&A8;
+end comportamiento;
