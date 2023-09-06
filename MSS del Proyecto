@@ -1,0 +1,93 @@
+Library ieee;
+use ieee.std_logic_1164.all;
+Entity MSS is
+Port(Resetn, Clock: in std_logic;
+	S_ERROR,FINISH,TERMINAR,START,UP,DOWN,MEDIR: in std_logic;
+	RESETN_D,CLOCK_D,CLOCK_P,CLOCK_E,CLOCK_C,CLOCK_R,RESETN_B: out std_logic;
+	CLOCK_ER,CLOCK_B,E,S: out std_logic);
+end MSS;
+Architecture comportamiento of MSS is
+	type estado is(Ta,Tb,Tc,Td,Te,Tf,Tg,Th,Tx,Tx1);
+	signal y: estado;
+begin
+process(Resetn, Clock)
+	begin 
+		if Resetn='0' then y<=Ta;
+			elsif(Clock'event and Clock='1') then
+			case y is
+				When Ta=>
+					if START='0' then y<=Ta;
+					else y<=Tb;
+					end if;
+				When Tb=>
+					if START='1' then y<=Tb;
+					else y<=Tx;
+					end if;
+				When Tx=>
+					if MEDIR='1' then y<=Tx1;
+					else y<=Tx;
+					end if;
+				When Tx1=>
+					if MEDIR='0' then y<=Tc;
+					else y<=Tx1;
+					end if;
+				When Tc=>
+					if S_ERROR='1' then y<=Td;
+					elsif FINISH='0'then y<=Tc;
+					else y<=Te;
+					end if;
+				When Td=>
+					if FINISH='0'then y<=Tc;
+					else y<=Te;
+					end if;
+				When Te=>
+					if UP='1' then y<=Tf;
+					elsif DOWN='1'then y<=Tg;
+					elsif TERMINAR='0' then y<=Te;
+					else y<=Th;
+					end if;
+				When Tf=>
+					if UP='1' then y<=Tf;
+					else y<=Te;
+					end if;
+				When Tg=>
+					if DOWN='1' then y<=Tg;
+					else y<=Te;
+					end if;
+				When Th=>
+					if TERMINAR='1' then y<=Th;
+					else y<=Ta;
+					end if;
+				end case;
+			end if;
+end process;
+process(y,FINISH,UP,DOWN,S_ERROR)
+	begin
+	RESETN_D<='0';CLOCK_D<='0';CLOCK_P<='0';CLOCK_E<='0';
+	CLOCK_C<='0';CLOCK_R<='0';CLOCK_ER<='0';CLOCK_B<='0';E<='0';S<='0';RESETN_B<='0';
+	case y is
+	When Tc=>
+		CLOCK_P<='1';CLOCK_E<='1'; CLOCK_R<='1'; CLOCK_ER<='1'; E<='1';
+		if (S_ERROR='0' and FINISH='0') then CLOCK_C<='1';end if;
+	When Td=>
+		CLOCK_B<='1';CLOCK_C<='1';
+		if FINISH='1' then RESETN_B<='1';
+		else RESETN_B<='1';
+		end if;
+	When Te=>
+		CLOCK_R<='1';S<='1';
+	When Tf=>
+		if UP='0' then CLOCK_D<='1';
+		end if;
+	When Tg=>
+		if DOWN='0' then RESETN_D<='1';
+		end if;
+	When Th=>
+	When Ta=>
+	When Tb=>
+	When Tx=>
+	When Tx1=>
+	end case;
+end process;
+end comportamiento;
+					
