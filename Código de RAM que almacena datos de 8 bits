@@ -1,0 +1,34 @@
+**Este código se empleó tanto para la RAM de peso y estatura**
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+--Entity
+entity RAM_PESO is 
+	port(
+		clk,en,wr: in std_logic; 
+		addr : in std_logic_vector(3 downto 0); 
+		Din : in std_logic_vector(7 downto 0);
+		Dout : out std_logic_vector(7 downto 0)); 
+end RAM_PESO;
+
+--Architecture
+architecture solve of RAM_PESO is
+	-- Signals,Constants,Variables,Components	
+	type ram_type is array (0 to 5) of std_logic_vector(7 downto 0); 
+	signal tmp_ram: ram_type; 
+	begin
+	--Process #1:
+	process(clk,wr)
+	--Sequential programming
+		begin
+			if (clk'event and clk='1') then
+				if wr='1' then --write
+					tmp_ram(conv_integer(addr)) <= Din; 
+				end if;
+			end if;
+	end process; 
+	--Process #n...
+	Dout<=(others=>'Z') when en='0' else tmp_ram(conv_integer(addr));--read 
+end solve;
